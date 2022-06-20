@@ -7,7 +7,7 @@ Presentation date: Friday, July 1, 2022
 
 ## Requirements
 - All required business rules from the [Project1 ERS.docx](https://github.com/220531-jwa/project-1/blob/main/Project1%20ERS.docx) must be implemented.  
-  - (The ability for an employee to upload a document can be considered a stretch goal).
+  - (The ability for an employee to upload a document can be considered a stretch goal along with the other business rules below under Stretch Goals).
 - All application data must be stored in an RDS.
   - Database must be in 3NF. 
 - Your application should be as RESTful as possible (at minimum it must follow the restful endpoint naming conventions).

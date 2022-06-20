@@ -2,8 +2,12 @@
 Guidelines and requirements for Project 1
 
 > ERS, or Employee Reimbursement System, is a full-stack web application that allows employees to submit requests for reimbursements for courses, events, and certifications. These requests can then be approved or rejected by the Finance Manager, while the employee is able to track the status of their requests.
-You will be required to present a 5-10 minute demo of your application and its features.  
-Presentation date: Friday, July 1, 2022
+You will be required to present a 5-10 minute demo of your application and its features.
+
+## Purpose
+The main purpose of this project is to have you work with Testing AUtomation using Selenium and Cucumber.
+
+### Presentation date: Friday, July 1, 2022
 
 ## Requirements
 - All required business rules from the [Project1 ERS.docx](https://github.com/220531-jwa/project-1/blob/main/Project1%20ERS.docx) must be implemented.  

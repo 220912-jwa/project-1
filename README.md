@@ -23,7 +23,7 @@ The main purpose of this project is to have you work with Testing AUtomation usi
   - Unit Tests - goal of 70% test coverage
   - Styled web pages either with CSS or Bootstrap. (Don't go overboard).
 
-- Create a public repository for your Project 1 (firstname_lastname_p1). In which you create a Project Board to track your progress. 
+- Create a public repository for your Project 1 (firstname_lastname_p1). In which you create a Project Board to track your progress and a Wiki Page to record your daily standup notes. 
 
 ## MVPs
 - A user (Employee or Finance Manager) can login to the app using their credentials

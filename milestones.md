@@ -23,6 +23,6 @@
 - Front end complete with styling
 - BDD Testing (Selenium/Cucumber) complete
 
-## Due Tuesday of Week 6
+## Due Wednesday of Week 6
 - Application is functioning
 - Presentation has been practiced

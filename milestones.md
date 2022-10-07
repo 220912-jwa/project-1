@@ -4,15 +4,19 @@
 > We can break our project down into smaller MVPs in order to make it more manageable. 
 
 ## By the beginning of Week 5
-- Database is set up
+- Requirement Traceability Matrix and Test Case Document created
+  - (Requirements and Test Cases with preconditions, steps, expected results, etc.)
+- Database is set up (make sure you can view your Entity Relationship Diagram (ERD) and that it reflects the foreign key relationships between your tables)
 - Application is connected to AWS RDS Database
-- Database persistence done (DAOs are implemented)
+  - (You are able to create a Connection Object using the ConnectionUtil class and DB credentials stored either in a `connection.properties` file or as System Environment Variables)
+- Database persistence started (begin DAO implementation) - if this is complete then you're in good shape
 
 ## By the middle of Week 5
-- Back end has Javalin Restful Endpoints (with Postman tests to verify functionality)
+- Database persistence done (DAOs are implemented)
+- Back end has Javalin Restful Endpoints (you can use Postman to make sure these work if you don't have a front end set up fully yet)
 - Some Unit Tests written in JUnit (for Services Layer)
-- Some progress on front end (HTML and JavaScript)
 - Some BDD Scenarios / Cucumber Feature Files
+- Some progress on front end (HTML and JavaScript)
 
 ## By the end of Week 5 
 - Back end is complete with Javalin Restful Endpoints
@@ -22,6 +26,7 @@
 ## By the beginning of Week 6
 - Front end complete with styling
 - BDD Testing (Selenium/Cucumber) complete
+- RTM and Test Case Document Complete
 
 ## Due Wednesday of Week 6
 - Application is functioning

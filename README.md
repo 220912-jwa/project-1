@@ -5,13 +5,13 @@ Guidelines and requirements for Project 1
 You will be required to present a 5-10 minute demo of your application and its features.
 
 ## Purpose
-The main purpose of this project is to have you work with Testing Automation using Selenium and Cucumber and incorporating Jira as an Application Management Tool.
+The main purpose of this project is to continue working with Testing Automation using Selenium and Cucumber and to begin including some Application Management Tool (like Jira, Trello, GitHub Project Board) to track the status of your Testing and Development.
 
 ### Presentation date: October 19, 2022
 
 ## Requirements
 - All required business rules from the [Project1 ERS.docx](https://github.com/220912-jwa/project-1/blob/main/Project1%20ERS.docx) must be implemented.  
-  - (The ability for an employee to upload a document can be considered a stretch goal along with the other business rules below under Stretch Goals).
+  - (The ability for an employee to upload a document can be considered a stretch goal along with the other business rules listed below under Stretch Goals).
 - All application data must be stored in an RDS.
   - Database must be in 3NF. 
 - Your application should be as RESTful as possible (at minimum it must follow the restful endpoint naming conventions).
@@ -21,8 +21,10 @@ The main purpose of this project is to have you work with Testing Automation usi
   - User input validation.
   - Unit Tests - goal of 70% test coverage
   - Styled web pages either with CSS or Bootstrap. (Don't go overboard).
+  - Requirements Traceability Matrix
+  - Test Case Document
 
-- Create a public repository for your Project 1 (firstname_lastname_p1). In which you create a Project Board to track your progress and a Wiki Page to record your daily standup notes. 
+- Create a public repository for your Project 1 (firstname_lastname_p1) in our GitHub Organization (220912-jwa). 
 
 ## MVPs
 - A user (Employee or Finance Manager) can login to the app using their credentials
@@ -51,6 +53,8 @@ The main purpose of this project is to have you work with Testing Automation usi
 - JUnit
 - JDBC 
 - JavaScript
-- AJAX / Fetch API
+- Fetch API
+- Postman
 - HTML
 - CSS / Bootstrap
+- Jira / GitHub / Trello

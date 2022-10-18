@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Welcome - Login</title>
+</head>
+<body>
+
+    <h1>Welcome - Please log in</h1>
+    <div id="login">
+
+        <label for="username">Username: </label>
+        <input id="username" type="text" placeholder="Enter your username"/>
+
+        <br/><br/>
+
+        <label for="password">Password: </label>
+        <input id="password" type="password" placeholder="Enter your password"/>
+
+        <br/><br/>
+
+        <button id="loginButton" type="button" onclick="login()">Log In</button>
+       
+    </div>
+    <script>
+        async function login() {
+
+            // get input 
+            uname = document.getElementById('username').value;
+            pass = document.getElementById('password').value;
+
+            let credentials = {
+                username: uname, 
+                password: pass
+            }
+
+            console.log(credentials)
+
+            credentialsJSON = JSON.stringify(credentials);
+            console.log(credentialsJSON);
+
+            // fetch(url, {method, header, body})
+            let baseUrl = "http://localhost:8080";
+
+            let res = await fetch(
+                            `${baseUrl}/authenticate`, // url
+                            {
+                                method: 'POST',
+                                header: {'Content-Type': 'application/json'},
+                                body: credentialsJSON
+                            }
+                        ); 
+            if (res.status === 200) {
+                let loggedInUser = await res.json();
+                
+                // instead of using ctx.sessionAttribute(key, value) on the back end...
+                // we can utilize the browser's sessionStorage
+                sessionStorage.setItem('userId', loggedInUser.id);
+                sessionStorage.setItem('userName', loggedInUser.firstName);
+                sessionStorage.setItem('availablePoints', loggedInUser.availablePoints);
+                
+
+                // if user is employee assign to home else send to manager
+                document.location.assign("./home.html");
+            } else {
+                console.log("Something went wrong.");
+            }
+          
+
+
+
+        }
+    </script>
+</body>
+</html>

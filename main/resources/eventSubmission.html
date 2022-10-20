@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Pitch Submission</title>
+    <!-- Bootstrap CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+</head>
+<body onload="getLoggedInUserFromSessionStorage()">
+<!--
+
+    Process
+    1. User fills in information
+    2. User presses 'Submit'
+    3. Gather input from the fields (using document.getElement....)
+    4. Create a JavaScript Object {key: value} for each field
+    5. Send POST request to our backend
+    6. Our Controller (Handler Method) will process request, using services and daos as needed.
+    7. Send a response with a 201 Created status 
+
+
+
+    basic author info -> This is from our Author Class
+        - id
+        - firstname
+        - lastname
+        [this is information that we'll get from a session attribute]
+
+    story title -> text input
+    tentative completion date -> date input
+    story type -> dropdown (options: novel, novella, shortstory, article)
+    genre -> dropdown (options: everything we have in our ENUM  Genre in Java)
+    tagline -> text input
+    detailed description -> textarea
+
+    [somewhere in here - we need to determine if this request is urgent -> if 
+    less than two weeks away - the request should be marked urgent]
+
+    button -> to send the form and the new story pitch
+-->
+    <button id="logoutButton" type="button" onclick="logout()">Log Out</button>
+
+    <br>
+    <br>
+
+    <h1>New Pitch Submission</h1>
+    
+    <label for="storyTitle">
+        Story Title: 
+    </label>
+    <input id="storyTitle" type="text" placeholder="tentative title"/>
+
+    <br>
+
+    <label for="tagline">
+        Story Tagline: 
+    </label>
+    <input id="tagline" type="text" placeholder="short catchy tagline"/>
+
+    <br>
+
+    <label for="description">
+        Story Title: 
+    </label>
+    <textarea id="description" type="text" placeholder="less than 500 words" maxlength="500"></textarea>
+
+    <br>
+
+    <label for="completionDate">Tentative Completion Date: </label>
+    <input id="completionDate" type="date"/>
+    <br>
+
+    <label for="storyType">Select Story Format: </label>
+    <select id="storyType">
+        <option >Select One</option>
+        <option value="NOVEL">Novel</option>
+        <option value="NOVELLA">Novella</option>
+        <option value="SHORT_STORY">Short Story</option>
+        <option value="ARTICLE">Article</option>
+    </select>
+
+    <label for="storyGenre">Select Story Genre: </label>
+    <select id="storyGenre">
+        <option >Select One</option>
+        <option value="FICTION">Fiction</option>
+        <option value="NON_FICTION">Non-Fiction</option>
+        <option value="FANTASY">Fantasy</option>
+        <option value="HORROR">Horror</option>
+    </select>
+
+    <button id="submitNewPitch" type="button" onclick="submitPitch()">Submit</button>
+
+    <div id="data" class="container">
+        <table id="pitchTable" class="table">
+            <thead>
+                <tr>
+                    <td>Pitch ID</td>
+                    <td>Title</td>
+                    <td>Tagline</td>
+                    <td>Genre</td>
+                    <td>Story Type</td>
+                </tr>
+            </thead>
+            <tbody id="pitchTableBody">
+                
+            </tbody>
+        </table>
+    </div>
+
+
+    <script>
+        let baseUrl = "http://localhost:8080";
+
+        function getLoggedInUserFromSessionStorage() {
+            let userId = sessionStorage.getItem('userId');
+            let userName = sessionStorage.getItem('userName');
+            console.log(userId)
+            console.log(userName)
+
+            if (userId == null || userName == null) {
+                alert("You need to be logged in to access this page!")
+                window.location.assign("./index.html")
+            }
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.assign('./index.html');
+        }
+
+        async function getLoggedInUser() {
+             // send a get request to see who the logged in user is
+             let res = await fetch(`${baseUrl}/getSession`);
+
+            if (res.status === 200) {
+                let data = await res.json();
+                console.log(data);
+                // we can create a global variable that will hold info on our logged in user
+                loggedInUser = data;
+            } else {
+                console.log("something went wrong")
+            }
+        }
+
+
+
+        async function submitPitch() {
+            // read information from the input fields. 
+            //console.log(loggedInUser.id);
+
+
+            let newPitch = {
+                id: 0,
+                tentativeTitle: document.getElementById('storyTitle').value,
+                tagline: document.getElementById('tagline').value,
+                description: document.getElementById('description').value,
+                tentativeCompletionDate: document.getElementById('completionDate').value,
+                genre: document.getElementById('storyGenre').value,
+                storyType: document.getElementById('storyType').value,
+                author: {
+                    // we'll be able to use that global vvariable to set the author's id
+                    id: sessionStorage.getItem("userId")
+                }
+            }
+
+            console.log(newPitch)
+
+            // Stringify -> turn that JS object into a JSON String
+            let pitchJson = JSON.stringify(newPitch);
+            console.log(pitchJson)
+            // send a post request
+            let res = await fetch(`${baseUrl}/pitches`,
+                {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: pitchJson
+                }
+            )
+
+            if (res.status === 201) {
+                let resBody = await res.json();
+
+                console.log(resBody);
+                // pass this returned data into the updateTable maethod to populate the new data into a table view for the user.
+                updateTable(resBody);
+
+
+            } else {
+                console.log("Something went wrong!")
+            }
+
+        }
+
+        function updateTable(newStoryPitch) {
+            
+            // use dom manipulation to update the table by adding a new row.
+            // select existing table from DOM
+            let pitchTableBody = document.getElementById('pitchTableBody');
+
+            // create a new tr
+            let newPitchTR = document.createElement("tr");
+
+            // create td for each property we want displayed in the table
+            
+            let idTD = document.createElement('td');
+            idTD.innerHTML = (newStoryPitch).id;
+
+            let titleTD = document.createElement('td');
+            titleTD.innerHTML = (newStoryPitch).tentativeTitle;
+
+            let taglineTD = document.createElement('td');
+            taglineTD.innerHTML = (newStoryPitch).tagline;
+
+            let genreTD = document.createElement('td');
+            genreTD.innerHTML = (newStoryPitch).genre;
+
+            let storyTypeTD = document.createElement('td');
+            storyTypeTD.innerHTML = (newStoryPitch).storyType;
+            
+            // add the newly creeated tds to the tr
+            newPitchTR.append(idTD, titleTD, taglineTD, genreTD, storyTypeTD);
+
+
+            // add the tr to the tbody
+            pitchTableBody.append(newPitchTR);
+        }
+
+    </script>
+
+
+<!-- Bootstrap - JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+</body>
+</html>

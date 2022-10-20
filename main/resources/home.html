@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body onload="loadPageForUserWithSessionStorage()">
+
+    <h1 id="welcomeHeader">Home Page</h1>
+
+    <button type="button" onclick="getPitchById()">New Reimbursement Request</button>
+
+    <script>
+        // baseURL
+        let baseUrl = "http://localhost:8080"
+        
+        
+        function loadPageForUserWithSessionStorage() {
+            // accessing our session storage that we set when the user logged in.
+            let name = sessionStorage.getItem("firstname");
+            let manager = sessionStorage.getItem("managerID");
+    
+            document.getElementById("welcomeHeader").innerHTML = `${name} homepage`;
+        }
+
+
+
+
+
+
+        async function getPitchById() {
+
+            // get input from user
+            let pitchId = document.getElementById('pitchId').value;
+
+            // send a get request with the fetch api
+            let res = await fetch(`${baseUrl}/pitches/${pitchId}`); //http://localhost:8080/pitches/id
+
+            if (res.status === 200) {
+                let resJson = await res.json();
+                console.log(resJson);
+                
+            } else {
+                console.log('whoops');
+            }
+
+        }
+
+        async function loadPageForUserWithJavalinSession() {
+
+            // send a get request to see who the logged in user is
+            let res = await fetch(`${baseUrl}/getSession`);
+
+            if (res.status === 200) {
+                let data = await res.json();
+                document.getElementById("welcomeHeader").innerHTML = `Welcome Back, ${data.firstName}. You have ${data.available_points} Story Points available to use!`;
+                
+            } else {
+                document.getElementById("welcomeHeader").innerHTML = "OOPS"
+            }
+                
+            
+            
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Employee Reimbursement System</title>
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../style/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <div class="jumbotron">
+                    <h1>Employee Reimbursement System</h1>
+                    <p>Welcome to the ERS!</p>
+                    <div class="formgroup">
+                        <div>
+                            <label for="username">Username: </label>
+                            <input type="text" id="username" class="form-control" required>
+                            <!-- <p><a href="./forgotusername.html"><small>Forgot Username?</small></a></p> -->
+                            <label for="password">Password: </label>
+                            <input type="password" id="password" class="form-control" required>
+                            <!-- <p><a href="#"><small>Forgot Password?</small></a></p> -->
+                            <button class="btn btn-primary active" id="submit" onclick="login();">Submit</button>
+                            <br>
+                    </div>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    let baseUrl = "http://localhost:8080"
+    async function login() {
+    // let userId = sessionStorage.getItem('userId');
+    // let userName = sessionStorage.getItem('userName');
+    // console.log(userId)
+    // console.log(userName)
+    username=document.getElementById("username").value;
+    password=document.getElementById("password").value
+    if (username && password) {
+    //  alert("You need to be logged in to access this page!")
+    //     window.location.assign("./home.html")
+    let credentials={
+        username:username,
+        password:password
+    }
+    credentialsJSON= JSON.stingfy(credentials);
+    let res=await fetch(
+        `${baseUrl}/authenticate`,
+        {
+            method:'POST',
+            header:{'Content-Type':'application/json'},
+            body:credentialsJSON
+        });
+        if(res.status===200){
+resJson = await res.json();
+console.log(resJson);        
+}
+    
+
+    }
+}
+
+async function getLoggedInUser() {
+             let res = await fetch(`${baseUrl}/getSession`);
+
+            if (res.status === 200) {
+                let data = await res.json();
+                console.log(data);
+                loggedInUser = data;
+            } else {
+                console.log("something went wrong")
+            }
+        }
+
+    
+
+
+
+</script>  
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Employee Management Page</title>
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../style/styles.css">
+</head>
+<body>
+    <div id="app">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <h2 class="navbar-text">Employee Reimbursement System</h2>
+                <p  v-if="isEmployeeLoaded"
+                    class="navbar-text navbar-right">Welcome {{ employee.fname }} {{ employee.lname }}! 
+                    <span v-if="employee.isManager">Viewing as: 
+                        <a href="#" @click="toggleRole">{{ role }}</a>
+                    </span>
+                </p>
+                <p v-if="isEmployeeLoaded" class="navbar-text navbar-right">
+                    <a href="#" @click="logout">Log Out</a>
+                </p>
+            </div>
+        </nav>
+        <section class="container">
+            <div class="row justify-content-center">
+                <div class="col-sm-12">
+                    <ul class="breadcrumb" id="navbar">
+                        <li class="breadcrumb-item"
+                            :class="{ active: viewing=='profile'}"
+                            @click="()=> switchProfile(0)">Employee Info
+                        </li>
+
+                        <li class="breadcrumb-item" 
+                            :class="{ active: viewing=='new'}"
+                            @click="()=> switchProfile(1)">New Reimbursement
+                        </li>
+
+                        <li class="breadcrumb-item"
+                            :class="{ active: viewing=='expenses'}" 
+                            @click="()=> switchProfile(2)">View Reimbursements
+                        </li>
+
+                        <li class="breadcrumb-item"
+                            :class="{ active: viewing=='employees'}" 
+                            @click="()=> switchProfile(3)"
+                            v-if="role=='Manager'">View Employees
+                        </li>
+
+                        <li class="breadcrumb-item"
+                            :class="{ active: viewing=='register'}" 
+                            @click="()=> switchProfile(4)"
+                            v-if="role=='Manager'">Register An Employee
+                        </li>
+
+              
+</body>
+</html>

@@ -35,17 +35,15 @@ public class ConnectionUtil {
         return connection;
     }
 
-    // small sanity check to make sure we can establish a connection to the database
+     //small sanity check to make sure we can establish a connection to the database
     // don't leave this code in your final project!
-//    public static void main(String[] args) throws SQLException {
-//        ConnectionUtil cu = ConnectionUtil.getConnectionUtil();
-//        Connection conn = cu.getConnection();
-//        if (conn != null) {
-//            System.out.println("Connection successful" + conn);
-//            conn.close();
-//        } else {
+//   public static void main(String[] args) throws SQLException {ConnectionUtil cu = ConnectionUtil.getConnectionUtil();
+//       Connection conn = cu.getConnection();
+//      if (conn != null) {
+//         System.out.println("Connection successful" + conn);          conn.close();
+//     } else {
 //            System.out.println("Connection failed");
-//        }
-//    }
+//      }
+//   }
 }
 

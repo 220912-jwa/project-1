@@ -2,24 +2,28 @@ package com.asaah.controllers;
 
 import com.asaah.entities.Employee;
 import com.asaah.entities.ReimRequest;
+import com.asaah.services.AuthenticationService;
 import com.asaah.services.EmployeeService;
+import com.asaah.utils.ConnectionUtil;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
+import okhttp3.Connection;
 
 public class EmployeeController {
 
 
-    private EmployeeService authenticationController;
     private EmployeeService employeeService;
+    private AuthenticationService authenticationService;
 
-    public EmployeeController(EmployeeService authenticationController) {
+    public EmployeeController(EmployeeService employeeService,AuthenticationService authenticationService) {
 
-        this.authenticationController = authenticationController;
+        this.employeeService = employeeService;
+        this.authenticationService=authenticationService;
     }
 
     public Handler login = ctx -> {
         Employee e = ctx.bodyAsClass(Employee.class);
-        Employee aue = authenticationController.login(e.getUsername(),e.getPassword());
+        Employee aue = authenticationService.login(e.getUsername(),e.getPassword());
         ctx.sessionAttribute("loggedInUser", aue);
         System.out.println(aue);
         if (aue != null) {
@@ -51,6 +55,7 @@ public class EmployeeController {
             System.out.println(em);
             ctx.status(200);
             ctx.json(employeeService.getAllEmployees());
+
         } else {
             System.out.println("sorry you can't do that");
             ctx.status(401);

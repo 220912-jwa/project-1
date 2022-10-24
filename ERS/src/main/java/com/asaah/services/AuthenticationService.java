@@ -1,6 +1,7 @@
 package com.asaah.services;
 
 import com.asaah.daos.UserDAO;
+import com.asaah.entities.Employee;
 import com.asaah.entities.User;
 
 public class AuthenticationService {
@@ -14,10 +15,10 @@ public class AuthenticationService {
     }
 
 
-    public User login(String username, String password) {
+    public Employee login(String username, String password) {
 
         // use the input to find the record based on username
-        User u = userDAO.getUserByUsername(username);
+        Employee u = userDAO.getUserByUsername(username);
         System.out.println(u);
 
         // check that the passwords match

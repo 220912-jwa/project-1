@@ -2,59 +2,211 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Employee Management Page</title>
-    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../style/styles.css">
+    <title>Requests</title>
 </head>
-<body>
-    <div id="app">
-        <nav class="navbar navbar-default navbar-fixed-top">
-            <div class="container">
-                <h2 class="navbar-text">Employee Reimbursement System</h2>
-                <p  v-if="isEmployeeLoaded"
-                    class="navbar-text navbar-right">Welcome {{ employee.fname }} {{ employee.lname }}! 
-                    <span v-if="employee.isManager">Viewing as: 
-                        <a href="#" @click="toggleRole">{{ role }}</a>
-                    </span>
-                </p>
-                <p v-if="isEmployeeLoaded" class="navbar-text navbar-right">
-                    <a href="#" @click="logout">Log Out</a>
-                </p>
-            </div>
-        </nav>
-        <section class="container">
-            <div class="row justify-content-center">
-                <div class="col-sm-12">
-                    <ul class="breadcrumb" id="navbar">
-                        <li class="breadcrumb-item"
-                            :class="{ active: viewing=='profile'}"
-                            @click="()=> switchProfile(0)">Employee Info
-                        </li>
+<body onload="currentViewedRe()" style="background-color: rgb(214, 232, 239);">
+    <h1 id="activeSub">Active Requests</h1>>
 
-                        <li class="breadcrumb-item" 
-                            :class="{ active: viewing=='new'}"
-                            @click="()=> switchProfile(1)">New Reimbursement
-                        </li>
+    <div id="subReview" class="container">
+        <table id="subTable" class="table" border="5">
+            <thead>
+                <tr>
+                    <th>Request Id</th>
+                    <th>Date of event</th>
+                    <th>Time of event</th>
+                    <th>Location of event</th>
+                    <th>Description</th>
+                    <th>Cost of event</th>
+                    <th>Passed/Failed</th>
+                    <th>Type of Event</th>
+                    <th>Work-related justification</th>
+                
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="reviewTableBody">
+                
+            </tbody>
+        </table>
+        </div>
+        <br>
 
-                        <li class="breadcrumb-item"
-                            :class="{ active: viewing=='expenses'}" 
-                            @click="()=> switchProfile(2)">View Reimbursements
-                        </li>
+        <button id="approve" onclick="approveRe()">Approve</button>
+        <br>
+        <button id="deny" onclick="denyRe()">Deny</button>
+        <br>
 
-                        <li class="breadcrumb-item"
-                            :class="{ active: viewing=='employees'}" 
-                            @click="()=> switchProfile(3)"
-                            v-if="role=='Manager'">View Employees
-                        </li>
+        <p>
+            <label for="ReApprove">Reimbursement amount:</label><br>
+            <input id="total" type="text">
+            <button id="calculateRe" onclick="calc()">Calculate</button>
+        </p>
+        <script>
+            let baseUrl = "http://localhost:8080";
+            
+            async function currentViewedRe() {
+                let reid = sessionStorage.getItem("reid");
+                console.log(reid);
+                let resBody = await fetch(`${baseUrl}/obtain/${reid}`)
+        
+                if(resBody.status ===200){
+                        console.log(resBody);
+                    let resJson = await resBody.json();
+                    let updated = resJson;
+                        
+                        update(updated);
+                        console.log(updated);
+                        sessionStorage.setItem('order_id',updated.order_id);
+                }
+                
+            }
 
-                        <li class="breadcrumb-item"
-                            :class="{ active: viewing=='register'}" 
-                            @click="()=> switchProfile(4)"
-                            v-if="role=='Manager'">Register An Employee
-                        </li>
+            function update(newRe) {
+            let newReTable = document.getElementById('reviewTableBody');
+            let newReTr = document.createElement("tr");
+            
+            let reIdTD = document.createElement('td');
+            reIdTD.innerHTML = (newRe).re_id; 
 
-              
+            let dateTD = document.createElement('td');
+            dateTD.innerHTML = (newRe).event_date;
+
+            let timeTD = document.createElement('td');
+            timeTD.innerHTML = (newRe).event_time;
+
+            let locationTD = document.createElement('td');
+            locationTD.innerHTML = (newRe).event_location;
+
+            let descriptionTD = document.createElement('td');
+            descriptionTD.innerHTML = (newRe).description;
+
+            let costTD = document.createElement('td');
+            costTD.innerHTML = (newRe).event_cost;
+
+            let passedTD = document.createElement('td');
+            passedTD.innerHTML = (newRe).passed;
+
+            let typeTD = document.createElement('td');
+            typeTD.innerHTML = (newRe).event_type;
+
+            let justificationTD = document.createElement('td');
+            justificationTD.innerHTML = (newRe).event_justification;
+
+            let fundsTD = document.createElement('td');
+            fundsTD.innerHTML = sessionStorage.getItem('funds');
+            
+            let statusTD = document.createElement('td');
+            statusTD.innerHTML = (newRe).status;
+            
+            
+                newReTr.append(reIdTD,dateTD,timeTD,locationTD,descriptionTD,costTD,passedTD,typeTD,justificationTD,fundsTD,statusTD);
+                newReTable.append(newReTr);
+            
+        }
+
+        function calc() {
+            let Cost = document.getElementsByTagName('td')[5].innerHTML;
+            let re = 0;
+            let eventType = document.getElementsByTagName('td')[7].innerHTML;
+            console.log(eventType);
+          
+            switch(eventType) {
+
+                case 'University Course': re = Cost * .8;
+                    document.getElementById("total").value = re;
+                break;
+
+                case 'Seminar': re = Cost * .6;
+                document.getElementById("total").value = re;
+                break;
+
+                case 'Certification Preperation Class': re = Cost * .75;
+                document.getElementById("total").value = re;
+                break;
+
+                case 'Certification': re = Cost * 1;
+                document.getElementById("total").value = re;
+                break;
+
+                case 'Technical Training': re = Cost * .9;
+                document.getElementById("total").value = re;
+                break;
+
+                case 'Other': re = Cost * .3;
+                document.getElementById("total").value = re;
+                break;
+               
+                
+            }
+        }
+        async function approveRe() {
+            
+            let re_id = sessionStorage.getItem('reid');
+            let status = "APPROVED";
+            
+            
+
+            //  let submitJson = JSON.stringify(updateSub);
+            let res = await fetch(`${baseUrl}/create/${status}/${re_id}`,
+                {
+                    method: "PUT",
+                    headers: {"Content-Type": "application/json"},
+                    body: ""
+                }
+            )
+            updateFunds();
+        }
+
+        async function denyRe() {
+            let re_id = sessionStorage.getItem('reid');
+            let status = "Denied";  
+
+            let res = await fetch(`${baseUrl}/create/${status}/${re_id}`,
+                {
+                    method: "PUT",
+                    headers: {"Content-Type": "application/json"},
+                    body: ""
+                }
+            )
+    
+            if (res.status === 200) {
+                alert("Request denied")
+                document.location.assign("./main.html");
+
+            } else {
+                console.log("Something went wrong!")
+            }
+
+
+        }
+    async function updateFunds() {
+        
+        let funds = (sessionStorage.getItem('funds') -document.getElementById('total').value);
+            console.log(funds);
+            let userId = sessionStorage.getItem('order_id');
+
+            let resf = await fetch(`${baseUrl}/funds/${funds}/${userId}`,
+                {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: ""
+
+                }
+            )
+            if (resf.status === 200) {
+                console.log('works');
+                document.location.assign('./main.html')
+            } 
+    }
+
+
+
+
+</script>
+
+
 </body>
 </html>

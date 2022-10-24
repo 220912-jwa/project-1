@@ -14,15 +14,9 @@ import java.util.List;
 public class UserDAO implements GenericDAO<User> {
     private ConnectionUtil cu = ConnectionUtil.getConnectionUtil();
 
-    public User getUserByUsername(String username) {
+    public Employee getUserByUsername(String username) {
 
-        String sql = "select * from " +
-                "(select id, username, pass, first_name, last_name, null as available_reimbursement, " +
-                "union " +
-                "select id, username, pass, first_name, last_name, available_reimbursement, " +
-                "null as col6 from employees em) " +
-                "as u " +
-                "where username = ?";
+        String sql = "select * from ers.employees where username = ?";
 
         try (Connection conn = cu.getConnection()) {
 
@@ -36,9 +30,9 @@ public class UserDAO implements GenericDAO<User> {
                 if ((rs.getString("is_manager"))==null) {
                     System.out.println("returning employee");
                     return new Employee(
-                            rs.getInt("id"),
+                            rs.getInt("emp_id"),
                             rs.getString("username"),
-                            rs.getString("pass"),
+                            rs.getString("password"),
                             rs.getString("first_name"),
                             rs.getString("last_name"),
                             rs.getString("is_manager"),
@@ -48,9 +42,9 @@ public class UserDAO implements GenericDAO<User> {
                 else {
                     System.out.println("returning manager");
                     Employee em = new Employee(
-                            rs.getInt("id"),
+                            rs.getInt("emp_id"),
                             rs.getString("username"),
-                            rs.getString("pass"),
+                            rs.getString("password"),
                             rs.getString("first_name"),
                             rs.getString("last_name"),
                             rs.getString("is_manager")

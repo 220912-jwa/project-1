@@ -1,0 +1,88 @@
+.body{
+    background-image: url("img/background.png");
+    background-position: center;
+}
+.login-window{
+    height: 230px;
+    width: 400px;
+    margin-top: 10%;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #4490b7a9;
+    border-radius: 20px;
+    text-align: center;
+}
+.input-login{
+    background-color: transparent;
+    color: black;
+    height: 25px;
+    border-radius: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    margin-bottom: 20px;
+    width: 60%;
+    
+
+}::placeholder {
+    color: rgb(19, 18, 18);
+    opacity: 1; /* Firefox */
+  }
+  .input-login-button{
+    background-color: #0b6bf196;
+    color: black;
+    border-radius: 6px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: large;
+  }
+  .employee-homepage-body{
+    background-color: beige;
+}
+.employee-heading{
+    padding-top: 20px;
+    text-align: center;
+}
+.Employee-Navbar{
+    height: 35px;
+    top: 0;
+    left: 0;
+    margin: 0px;
+    width: 100%;
+    background-color: #ceb1b1;
+    position:fixed;
+
+}
+.Employee-Navbar ul li{
+    color: black;
+    list-style: none;
+    font-size: 30px;
+    top: 0;
+    display: inline;    
+    
+}
+.Employee-Navbar ul{
+    position: fixed;    
+    margin:auto;
+    width: 100%;
+    text-align: center;
+}
+.reimbursement-table-data{
+    border-collapse: collapse;
+    width: auto;
+    max-width: fit-content;
+    overflow-x:auto;
+    margin: 0 auto;
+}
+.reimbursement-table-data th {
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+  }.reimbursement-table-data td {
+    height: 30px;
+    vertical-align: bottom;
+    border: 1px solid;
+    padding: 10px;
+  }

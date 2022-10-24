@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RequestSubmission</title>
+</head>
+<body onload="loadPageForUserWithSessionStorage()">
+
+    <h1 id="welcomeHeader">Welcome Home - please submit request here</h1>
+
+
+
+
+
+
+    <!-- <a href="ReimbursementRequest.html">Submit New Request</a> -->
+
+    <!-- <label for="RequestId">
+        <input id="requestId" type="number"/>
+    </label>
+    <button type="button" onclick="getrequestById()">Get Request</button>
+     -->
+
+
+
+    <label for="date">Starting Date: </label>
+    <input  id="date" class="input-form" type="date" />
+    <!-- <label for="time">Duration: </label>
+    <input  id="time" class="input-form" type="time" /> -->
+    </div>
+    <br>
+    <div class="form-display">
+    <label for="location">Location: </label>
+    <input id="location" class="input-form" type="text" />
+    </div>
+    <br>
+    <div class="form-display">
+    <label for="description">Description: </label>
+    <Textarea id="description" class="input-form" rows="3" cols="20">Enter Description Here</Textarea>
+    </div>
+    <br>
+    <div class="form-display">
+    <label for="cost">Cost: </label>
+    <input id="cost" class="input-form" type="text"/>
+    </div>
+    <br>
+    <div class="form-display">
+        <label for="gradingformat">Grading Format: </label>
+        <textarea id="gradingformat" class="input-form" rows="5" cols="20">Example: A-> 90-100</textarea>       
+    </div>
+    <br>
+    <div class="form-display">
+        <label for="eventtype">Event: </label>
+        <select id="eventtype" >
+            <option>Select Here</option>
+            <option value="1"> University Course</option>
+        </select>
+    </div>
+    <br>
+    <div class="form-display">
+        <label for="justification">justification: </label>
+        <textarea id="justification" class="input-form" rows="4" cols="20">Enter your Justification</textarea>
+    </div>
+    <br>
+   
+    <br>
+    <button id="Submit" type="button" onclick="Submit()" >Submit</button>
+</div>
+
+
+
+
+         <script>
+        let baseUrl = "http://localhost:8080"
+        
+        
+        function loadPageForUserWithSessionStorage() {
+            // accessing our session storage that we set when the user logged in.
+            let name = sessionStorage.getItem("userName");
+            document.getElementById("welcomeHeader")
+        }
+
+        async function getRequestById() {
+
+// get input from user
+let reimRequestId = document.getElementById('reimRequestId').value;
+
+// send a get request with the fetch api
+let res = await fetch(`${baseUrl}/pitches/${reimRequestId}`); //http://localhost:8080/pitches/id
+
+if (res.status === 200) {
+    let resJson = await res.json();
+    console.log(resJson);
+    
+} else {
+    console.log('whoops');
+}
+
+}
+
+async function loadPageForUserWithJavalinSession() {
+
+// send a get request to see who the logged in user is
+let res = await fetch(`${baseUrl}/getSession`);
+
+if (res.status === 200) {
+    let data = await res.json();
+    document.getElementById("welcomeHeader")
+    
+} else {
+    document.getElementById("welcomeHeader").innerHTML = "OOPS"
+}
+    
+dropdown=document.getElementById("eventType");
+            
+            async function addoption(selectbox,text,value )
+            {
+                var options = document.createElement("OPTION");
+                options.text = text;
+                options.value = value;
+                selectbox.options.add(options);
+            }
+            async function loadPageForUser(){
+                let baseUrl="http://localhost:8080";
+                let res = await fetch(`${baseUrl}/coverages`);
+                if (res.status === 200) {
+                    let resJson = await res.json();
+                    console.log(resJson);
+                    for (var i=0; i < resJson.length;++i){
+                    addoption(dropdown, resJson[i].coveragename, resJson[i].coverageid);
+                    }
+                } else {
+                    console.log("Something went wrong.");
+                }
+                
+            } 
+            
+
+            function logout(){
+            sessionStorage.clear();
+            window.location.assign('./index.html');
+        }
+
+
+
+
+
+}
+async function ReimRequest(){
+            let baseUrl="http://localhost:8080";
+            dateinput = document.getElementById('date').value;
+            // timeinput = document.getElementById('time').value;
+            locationinput = document.getElementById('location').value;
+            descriptioninput = document.getElementById('description').value;
+            costinput = document.getElementById('cost').value;
+            gradingformatinput = document.getElementById('gradingformat').value;
+            coverageidinput = document.getElementById('eventtype').value;
+            anyjustificationinput = document.getElementById('justification').value;
+            // optionalfilesinput = document.getElementById('optionalfiles').value;
+            today = new Date();
+            afterdate=new Date();
+            afterdate.setDate(today.getDate()+7);
+            dateafter = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+afterdate.getDate();
+            if(dateinput>dateafter){
+            date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            dateTime = date+' '+time;
+            if(dateinput  && locationinput && descriptioninput && costinput && gradingformatinput &&
+             coverageidinput!='Select Here' && anyjustificationinput){
+            let values = {
+                id:0,
+                empId: sessionStorage.getItem("empId"),
+                eventTypeId:eventTypeinput,
+                eventDate :dateinput,
+                // time:timeinput,
+                submittedOn:dateinput,
+                location:locationinput,
+
+                status:"submitted",
+                //description:descriptioninput,
+                // cost:costinput,
+                // gradingformat:gradingformatinput,
+                // anyjustification:anyjustificationinput,
+                // // optionalfiles:optionalfilesinput,
+
+
+                // updatedon:"null",
+            }
+            valuesJSON = JSON.stringify(values);
+            let res = await fetch(
+                            `${baseUrl}/requests`, // url
+                            {
+                                method: 'POST',
+                                header: {'Content-Type': 'application/json'},
+                                body: valuesJSON
+                            }
+                        ); 
+            if (res.status === 200) {
+                alert("Submitted");
+                document.location.assign("./EmpoyeeReimbursement.html");
+            } else {
+                console.log("Something went wrong.");
+            }
+        }else{
+            alert("Required Values are missing");
+        }
+        }else{
+            alert("One Week Review Time Required. Select another date");
+        }     
+        } 
+    </script>
+</body>
+</html>

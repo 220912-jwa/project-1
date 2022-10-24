@@ -29,11 +29,11 @@ public class AppDriver {
         // SERVICES
         EmployeeService employeeService = new EmployeeService(employeeDAO, reimRequestDAO);
         ReimRequestService reimRequestService = new ReimRequestService(reimRequestDAO);
-
+        AuthenticationService ecs=new AuthenticationService(new UserDAO() );
 
 
         // CONTROLLERS
-        EmployeeController employeeController = new EmployeeController(employeeService);
+        EmployeeController employeeController = new EmployeeController(employeeService,ecs);
         ReimRequestController reimRequestController = new ReimRequestController(reimRequestService);
 
 
@@ -47,7 +47,7 @@ public class AppDriver {
 
         app.routes(() -> {
             path("/authenticate", () -> {
-                post(ac.login);
+                post(employeeController.login);
             });
 
 //            path("/logout", () -> {
@@ -58,7 +58,7 @@ public class AppDriver {
 
 
             path("/employees", () -> { // http://localhost:8080/employees
-                get(employeeController::getAllEmployees);
+                get(employeeController::getAllEmployee);
 
                 path("/{id}", () -> { // http://localhost:8080/employees/2
                     get(employeeController::getEmployeeById);

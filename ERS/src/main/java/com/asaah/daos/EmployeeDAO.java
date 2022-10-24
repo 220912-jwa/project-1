@@ -15,7 +15,7 @@ public class EmployeeDAO implements GenericDAO<Employee>{
 
     @Override
     public Employee getById(int id) {
-        String sql = "select * from employee where id = ?";
+        String sql = "select * from ers.employees where emp_id = ?";
 
         try (Connection conn = cu.getConnection()) {
 
@@ -25,9 +25,9 @@ public class EmployeeDAO implements GenericDAO<Employee>{
 
             if (rs.next()) {
                 return new Employee(
-                        rs.getInt("id"),
+                        rs.getInt("emp_id"),
                         rs.getString("username"),
-                        rs.getString("pass"),
+                        rs.getString("password"),
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getString("is_manager"),
@@ -43,7 +43,7 @@ public class EmployeeDAO implements GenericDAO<Employee>{
 
     public Employee getEmployeesByUsername(String username) {
 
-        String sql = "select * from employees where username = ?";
+        String sql = "select * from ers.employees where username = ?";
 
         try (Connection conn = cu.getConnection()) {
 
@@ -53,9 +53,9 @@ public class EmployeeDAO implements GenericDAO<Employee>{
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                return new Employee(rs.getInt("id"),
+                return new Employee(rs.getInt("emp_id"),
                         rs.getString("username"),
-                        rs.getString("pass"),
+                        rs.getString("password"),
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getString("is_manager"),
@@ -73,16 +73,16 @@ public class EmployeeDAO implements GenericDAO<Employee>{
     public List<Employee> getAll() {
         List<Employee> employees = new ArrayList<>();
 
-        String sql = "select * from employees";
+        String sql = "select * from ers.employees";
 
         try (Connection conn = cu.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                employees.add(new Employee(rs.getInt("id"),
+                employees.add(new Employee(rs.getInt("emp_id"),
                         rs.getString("username"),
-                        rs.getString("pass"),
+                        rs.getString("password"),
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getString("is_manager"),
@@ -99,7 +99,7 @@ public class EmployeeDAO implements GenericDAO<Employee>{
 
     @Override
     public Employee create(Employee e) {
-        String sql = "insert into employees values (default, ?, ?, ?, ?, ?) returning *";
+        String sql = "insert into ers.employees values (default, ?, ?, ?, ?, ?) returning *";
 
         try (Connection conn = cu.getConnection()) {
 
@@ -114,9 +114,9 @@ public class EmployeeDAO implements GenericDAO<Employee>{
 
             if (rs.next()) {
                 return new Employee(
-                        rs.getInt("id"),
+                        rs.getInt("emp_id"),
                         rs.getString("username"),
-                        rs.getString("pass"),
+                        rs.getString("password"),
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getString("is_manager"),
@@ -130,7 +130,7 @@ public class EmployeeDAO implements GenericDAO<Employee>{
 
     @Override
     public void update(Employee eUpdated) {
-        String sql = "update employees set username = ?, pass = ?, first_name = ?, last_name = ?, " +
+        String sql = "update ers.employees set username = ?, pass = ?, first_name = ?, last_name = ?, " +
                 "available_reimbursement = ? "
                 + "where id = ?";
 
@@ -154,7 +154,7 @@ public class EmployeeDAO implements GenericDAO<Employee>{
 
     @Override
     public void delete(int id) {
-        String sql = "delete from employees where id = ?";
+        String sql = "delete from ers.employees where emp_id = ?";
         try (Connection conn = cu.getConnection()) {
 
             PreparedStatement ps = conn.prepareStatement(sql);

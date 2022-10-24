@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body onload="loadPageForUserWithSessionStorage()">
+
+<h1 id="welcomeHeader">Welcome Home!</h1>
+
+<a href="./eventSubmission.html">Submit New Event </a>
+
+<br>
+
+<label for="eventId">
+    <input id="eventId" type="number"/>
+</label>
+<button type="button" onclick="getEventById()">Approve event</button>
+<br>
+
+<table class="tableclass" id="events"  border="1" >
+    <thead>
+        <th>Event Id</th>
+        <th>Name</th>
+        <th>Cost</th>
+        <th>Start Date</th>
+        <th>End date</th>
+        <th>Employee ID</th>
+        <th>Manager ID</th>
+        <th>Approved</th>
+        <th></th>
+    </thead>
+    <tbody id="eventsBody">
+    </tbody>
+</table>
+
+<script>
+        // baseURL
+        let baseUrl = "http://localhost:8080"
+
+
+        function loadPageForUserWithSessionStorage() {
+            // accessing our session storage that we set when the user logged in.
+            let name = sessionStorage.getItem("userName");
+            let id = sessionStorage.getItem("userId");
+
+            document.getElementById("welcomeHeader").innerHTML = `Welcome Back, ${name}.`;
+
+        }
+
+        async function approve() {
+
+            // get input from user
+            let eventid = document.getElementById('eventID').value;
+
+            // send a get request with the fetch api
+            let res = await fetch(`${baseUrl}/events/{eventid}`); //http://localhost:8080/events/id
+
+            if (res.status === 200) {
+
+                let res1 = await fetch(
+                            `${baseUrl}/events/approve`, // url
+                            {
+                                method: 'POST',
+                                header: {'Content-Type': 'application/json'},
+                                body: res
+                            }
+                        );
+
+            } else {
+                console.log('whoops');
+            }
+
+        }
+
+        async function loadPageForUserWithJavalinSession() {
+
+            // send a get request to see who the logged in user is
+            let res = await fetch(`${baseUrl}/getSession`);
+
+            if (res.status === 200) {
+                let data = await res.json();
+                document.getElementById("welcomeHeader").innerHTML = `Welcome Back, ${data.firstName}. You have ${data.available_points} Story Points available to use!`;
+                
+            } else {
+                document.getElementById("welcomeHeader").innerHTML = "OOPS"
+            }
+
+            let id = sessionStorage.getItem('userId');
+            console.log(id);
+            let tableRes = await fetch('http://localhost:8080/users/{id}/events');
+            console.log(tableRes);
+            if (tableRes.status === 200) {
+                let resJson = await tableRes.json();
+                console.log(resJson);
+                let allApps = resJson;
+
+                allApps.forEach(app => {updateTable(app);
+
+                });
+
+        }
+
+        async function getLoggedInUser() {
+             // send a get request to see who the logged in user is
+             let res = await fetch(`${baseUrl}/getSession`);
+
+            if (res.status === 200) {
+                let data = await res.json();
+                console.log(data);
+                // we can create a global variable that will hold info on our logged in user
+                loggedInUser = data;
+            } else {
+                console.log("something went wrong")
+            }
+        }
+
+        function getLoggedInUserFromSessionStorage() {
+            let userId = sessionStorage.getItem('userId');
+            let userName = sessionStorage.getItem('userName');
+            console.log(userId)
+            console.log(userName)
+
+
+            if (userId == null || userName == null) {
+                alert("You need to be logged in to access this page!")
+                window.location.assign("./index.html")
+            }
+        }
+
+        function updateTable(newForm){
+
+            let body = document.getElementById("eventsBody");
+            let row = document.createElement("tr");
+
+            let id= document.createElement('td');
+            id.innerHTML = newForm.id;
+
+            let name = document.createElement('td');
+            name.innerHTML = newForm.nameOfClass;
+
+            let cost = document.createElement('td');
+            cost.innerHTML = newForm.costOfClass;
+
+            let start = document.createElement('td');
+            start.innerHTML = newForm.startDate;
+
+            let end = document.createElement('td');
+            end.innerHTML = newForm.endDate;
+
+            let employee = document.createElement('td');
+            employee.innerHTML = newForm.employeeID;
+
+            let manager = document.createElement('td');
+            manager.innerHTML = newForm.managerID;
+
+            let approved = document.createElement('td');
+            approved.innerHTML = newForm.approved;
+
+            row.append(id, name, cost, start, end, employee, manager, approved);
+            body.append(row);
+        }
+        }
+
+    </script>
+
+</body>
+</html>

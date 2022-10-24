@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Reimbursement Request</title>
+    <!-- Bootstrap CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+</head>
+<!--body onload="getLoggedInUserFromSessionStorage()"-->
+<body>
+
+<button id="logoutButton" type="button" onclick="logout()">Log Out</button>
+
+<br>
+<h1>New Reimbursement Request</h1>
+<br>
+
+
+<label for="eID">
+    Event ID :
+</label>
+<input id="eID" type="text" placeholder="name"/>
+
+<br>
+
+<label for="eName">
+    Event name :
+</label>
+<input id="eName" type="text" placeholder="name"/>
+
+<br>
+
+<label for="eCost">
+    Event cost :
+</label>
+<input id="eCost" type="text" placeholder="$"/>
+
+<br>
+<label for="eTime">
+    Military Time of Event:
+</label>
+<textarea id="eTime" type="text" placeholder="1730"></textarea>
+<br>
+
+<label for="eDesc">
+    Description:
+</label>
+<textarea id="eDesc" type="text" placeholder="About the event" maxlength="500"></textarea>
+
+<br>
+
+<label for="justification">
+    Justification:
+</label>
+<textarea id="justification" type="text" placeholder="justification for reimbursement" maxlength="500"></textarea>
+
+<br>
+<label for="gradeDescription">
+    Grading Format:
+</label>
+<textarea id="gradeDescription" type="text" placeholder="Letter grade, percent, presentation" maxlength="500"></textarea>
+
+
+<br>
+
+<label for="startDate">Start Date: </label>
+<input id="startDate" type="date"/>
+<br>
+
+<br>
+<label for="endDate">End Date: </label>
+<input id="endDate" type="date"/>
+<br>
+
+<button id="submitNewEvent" type="button" onclick="submitEvent()">Submit</button>
+
+
+<script>
+        let baseUrl = "http://localhost:8080";
+
+        async function submitEvent() {
+            // read information from the input fields.
+            //console.log(loggedInUser.id);
+
+
+            let newEvent = {
+
+                id: document.getElementById('eID').value,
+                //typeOfClass: document.getElementById('eType').value,
+                nameOfClass: document.getElementById('eName').value,
+                costOfClass: (document.getElementById('eCost').value * 100),
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                timeOfClass: document.getElementById('eTime').value,
+                about: document.getElementById('eDesc').value,
+                justification: document.getElementById('justification').value,
+                employeeID: document.getElementById('eDesc').value,
+                managerID: document.getElementById('justification').value,
+                employeeID: {
+                    id: sessionStorage.getItem("userId")
+                },
+                managerID: {
+                    id: sessionStorage.getItem("managerId")
+                },
+                //gradeDescription: document.getElementById('gradingDescription').value,
+                gradingFormat: 0,
+                finalGrade: null,
+                approved: null,    //will be null until approved or denied
+                fullForm: null,
+                gradeOrPresentation: null,
+            }
+
+            console.log(newEvent)
+
+            // Stringify -> turn that JS object into a JSON String
+            let eventJson = JSON.stringify(newEvent);
+            // send a post request
+            let res = await fetch(`http://localhost:8080/events`,
+                {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: eventJson
+                }
+            );
+            console.log(res);
+
+            if (res.status === 201) {
+                let resBody = await res.json();
+
+                console.log(resBody);
+                // pass this returned data into the updateTable method to populate the new data into a table view for the user.
+                //updateTable(resBody);
+
+
+            } else {
+                console.log("Something went wrong!")
+            }
+
+        }
+
+        async function getLoggedInUser() {
+             // send a get request to see who the logged in user is
+             let res = await fetch(`${baseUrl}/getSession`);
+
+            if (res.status === 200) {
+                let data = await res.json();
+                console.log(data);
+                // we can create a global variable that will hold info on our logged in user
+                loggedInUser = data;
+            } else {
+                console.log("something went wrong")
+            }
+        }
+
+        function getLoggedInUserFromSessionStorage() {
+            let userId = sessionStorage.getItem('userId');
+            let userName = sessionStorage.getItem('userName');
+            console.log(userId)
+            console.log(userName)
+
+
+            if (userId == null || userName == null) {
+                alert("You need to be logged in to access this page!")
+                window.location.assign("./index.html")
+            }
+        }
+
+
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.assign('./index.html');
+        }
+
+
+
+        function updateTable(newStoryPitch) {
+
+            // use dom manipulation to update the table by adding a new row.
+            // select existing table from DOM
+            let pitchTableBody = document.getElementById('pitchTableBody');
+
+            // create a new tr
+            let newPitchTR = document.createElement("tr");
+
+            // create td for each property we want displayed in the table
+
+            let idTD = document.createElement('td');
+            idTD.innerHTML = (newStoryPitch).id;
+
+            let titleTD = document.createElement('td');
+            titleTD.innerHTML = (newStoryPitch).tentativeTitle;
+
+            let taglineTD = document.createElement('td');
+            taglineTD.innerHTML = (newStoryPitch).tagline;
+
+            let genreTD = document.createElement('td');
+            genreTD.innerHTML = (newStoryPitch).genre;
+
+            let storyTypeTD = document.createElement('td');
+            storyTypeTD.innerHTML = (newStoryPitch).storyType;
+
+            // add the newly creeated tds to the tr
+            newPitchTR.append(idTD, titleTD, taglineTD, genreTD, storyTypeTD);
+
+
+            // add the tr to the tbody
+            pitchTableBody.append(newPitchTR);
+        }
+
+
+
+    </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+<!-- Bootstrap - JavaScript Bundle with Popper -->
+</body>
+</html>
